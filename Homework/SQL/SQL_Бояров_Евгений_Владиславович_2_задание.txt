@@ -1,0 +1,13 @@
+Задача №2
+Написать запрос, выводящий клиента с самым длинным домашним адресом, чей телефонный номер заканчивается на 77. Вывести результат в одном столбце, в формате “Name: [cust_first_name] [cust_last_name]; city: [cust_city]; address: [cust_street_address]; number:[cust_main_phone_number]; email: [cust_email]; ”. (всё, что обернуто в [] – названия полей (столбцов) таблицы). 
+
+Запрос:
+SELECT cust_first_name ||' '|| cust_last_name AS name, 
+cust_city AS city, 
+cust_street_address AS address, 
+cust_main_phone_number AS "number", cust_email AS email FROM sh.CUSTOMERS 
+WHERE CUST_ID = (
+SELECT CUST_ID FROM sh.CUSTOMERS
+WHERE CUSTOMERS.CUST_MAIN_PHONE_NUMBER LIKE '%77'
+ORDER BY LENGTH (CUST_STREET_ADDRESS) desc 
+FETCH NEXT 1 ROWS ONLY);
