@@ -1,0 +1,16 @@
+Задача №3
+Написать запрос, выводящий всех клиентов, которые купили самый дешевый продукт (цена считается от цены продажи - cust_list_price) в субкатегории 'Sweaters - Men' или 'Sweaters - Women' (связка таблиц CUSTOMERS -> SALES -> PRODUCTS), среди тех, кто родился позже 1980 года, вывод должен быть отсортирован по cust_id. 
+
+Запрос:
+SELECT DISTINCT c.* FROM sh.CUSTOMERS c 
+JOIN sh.SALES s ON c.CUST_ID = s.CUST_ID 
+JOIN sh.PRODUCTS p ON s.PROD_ID = p.PROD_ID 
+WHERE p.PROD_LIST_PRICE = 
+(SELECT min (p.PROD_LIST_PRICE) FROM sh.PRODUCTS p 
+JOIN sh.SALES s ON p.PROD_ID = s.PROD_ID 
+JOIN sh.CUSTOMERS c ON s.CUST_ID = c.CUST_ID 
+WHERE c.CUST_YEAR_OF_BIRTH > 1980
+AND p.PROD_CATEGORY IN ('Men', 'Women')
+) 
+AND c.CUST_YEAR_OF_BIRTH > 1980
+ORDER BY c.CUST_ID ASC ;

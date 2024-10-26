@@ -1,0 +1,12 @@
+Задача № 4
+Написать запрос, выводящий всех клиентов-мужчин с уровнем дохода "D", у которых не заполнено поле "семейное положение" и которые проживают в США или Германии (с использованием EXISTS). Отсортировать по cust_id. 
+
+Запрос:
+SELECT * FROM sh.CUSTOMERS c 
+WHERE EXISTS 
+(SELECT * FROM sh.CUSTOMERS c2
+WHERE c.CUST_MARITAL_STATUS IS NULL)
+AND c.CUST_GENDER = 'M'
+AND c.CUST_INCOME_LEVEL LIKE 'D%'
+AND c.COUNTRY IN ('United States of America', 'Germany')
+ORDER BY c.CUST_ID ;

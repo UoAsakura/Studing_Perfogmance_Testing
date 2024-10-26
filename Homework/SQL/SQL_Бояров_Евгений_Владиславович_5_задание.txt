@@ -1,0 +1,10 @@
+Задача № 5
+Написать запрос, выводящий среднюю сумму покупки (сумма покупки является произведением цены товара (prod_list_price) на количество проданного товара (quantity_sold)) в каждой стране, полное название страны. Отсортировать в порядке убывания средней суммы. 
+
+Запрос:
+SELECT COUNTRY, round(sum(p.PROD_LIST_PRICE) / count(s.QUANTITY_SOLD), 2) AS AVG_Price 
+FROM sh.CUSTOMERS c
+JOIN sh.SALES s ON c.CUST_ID = s.CUST_ID 
+JOIN sh.PRODUCTS p ON s.PROD_ID = p.PROD_ID 
+GROUP BY COUNTRY
+ORDER BY AVG_Price DESC ;
