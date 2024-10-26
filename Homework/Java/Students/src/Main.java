@@ -66,7 +66,9 @@ class GradeAggregator {
 
     // Проверка корректности имени файла.
     private boolean isValidFileName(String fileName) {
-        return fileName.matches("^[А-Яа-я]+_[А-Яа-я]+_[А-Яа-я]+\\.txt$");
+//        return fileName.matches("^[А-Яа-я]+_[А-Яа-я]+_[А-Яа-я]+\\.txt$");
+//        return fileName.matches("^[А-Яа-я]+[_\s]+[А-Яа-я]+[_\s]+[А-Яа-я]+\\.txt$");
+        return fileName.matches("^[А-Яа-я]+[_ ]?[А-Яа-я]+[_ ]?[А-Яа-я]+\\.txt$");
     }
 
     // Метод для чтения и парсинга файла, проверка корректности его содержимого.
@@ -82,7 +84,7 @@ class GradeAggregator {
                 continue; // Пропускаем пустые строки, в точ числе если они встречаются в конце файла.
             }
 
-            String[] parts = line.split("–");
+            String[] parts = line.split("-");
             if (parts.length == 2) {  // Проверка на наличие разделителя "–" .
                 String subject = parts[0].trim();
                 try {
@@ -124,7 +126,10 @@ class GradeAggregator {
         getBottomStudents().forEach(student ->
                 report.append(student.getFullName()).append(" - ").append(String.format("%.2f", student.getAverageGrade())).append("\n"));
 
-        System.out.println(report.toString());
+        // Вывод содержимого файла в консоль.
+        System.out.println("\n"+report.toString());
+        // Сообщение о успешной записи нового файла.
+        System.out.println("\nФайл успешно создан!");
 
         // Запись в файл отчета.
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(reportFilePath))) {
