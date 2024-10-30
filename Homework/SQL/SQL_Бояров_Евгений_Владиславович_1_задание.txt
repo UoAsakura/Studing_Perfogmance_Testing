@@ -2,8 +2,17 @@
 Написать запрос, выводящий имя и фамилию самых бедных клиентов - среди замужных женщин, не проживающих ни в Японии, ни в Бразилии, ни в Италии. Богатство определяется по кредитному лимиту. [Отсортировать по CUST_LAST_NAME]. 
 
 Запрос:
-SELECT CUST_FIRST_NAME,CUST_LAST_NAME FROM sh.CUSTOMERS
-WHERE CUST_CREDIT_LIMIT = (SELECT min(CUST_CREDIT_LIMIT) FROM sh.CUSTOMERS)
+SELECT CUST_FIRST_NAME, CUST_LAST_NAME FROM sh.CUSTOMERS
+WHERE CUST_CREDIT_LIMIT =
+(
+	-- Уточняем кредитный лимит самой материально бедной женщины из условия.
+	SELECT DISTINCT c.CUST_CREDIT_LIMIT FROM sh.CUSTOMERS c 
+	WHERE c.CUST_GENDER = 'F'
+	AND COUNTRY NOT IN ('Japan', 'Brazil', 'Italy')
+	AND c.CUST_MARITAL_STATUS = 'married'
+	ORDER BY 1 ASC 
+	FETCH FIRST 1 ROWS ONLY
+)
 AND CUST_MARITAL_STATUS = 'married'
 AND CUST_GENDER = 'F' 
 AND COUNTRY NOT IN ('Japan', 'Brazil', 'Italy')

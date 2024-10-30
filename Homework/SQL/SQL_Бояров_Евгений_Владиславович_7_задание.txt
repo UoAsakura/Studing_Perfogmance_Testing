@@ -1,4 +1,22 @@
 Задача № 7
-
+Написать запрос, выводящий распределение суммы проданных товаров в единицах (quantity_sold) категории "Men" по странам (т.е. распределение по странам, в которых проживают клиенты), в конечной выборке оставить те страны, в которых общее количество проданных товаров в единицах выше, чем средняя сумма проданных товаров в единицах этой категории в стране (по всему миру). Упорядочить по полному названию стран. 
 
 Запрос:
+SELECT 
+	c.COUNTRY AS Страна, 
+	p.PROD_CATEGORY AS Категория,
+	sum(s.QUANTITY_SOLD) AS Количество 
+FROM sh.SALES s 
+	JOIN sh.CUSTOMERS c ON s.CUST_ID = c.CUST_ID 
+	JOIN sh.PRODUCTS p ON s.PROD_ID = p.PROD_ID 
+WHERE p.PROD_CATEGORY = 'Men'
+GROUP BY c.COUNTRY, p.PROD_CATEGORY
+HAVING sum(s.QUANTITY_SOLD) > 
+(
+	SELECT sum(s.QUANTITY_SOLD) / count(DISTINCT c.COUNTRY) AS "Среднее количество"
+	FROM sh.SALES s 
+	JOIN sh.CUSTOMERS c ON s.CUST_ID = c.CUST_ID 
+	JOIN sh.PRODUCTS p ON s.PROD_ID = p.PROD_ID 
+	WHERE p.PROD_CATEGORY = 'Men'
+)
+ORDER BY c.COUNTRY 

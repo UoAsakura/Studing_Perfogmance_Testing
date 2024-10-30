@@ -1,4 +1,20 @@
 Задача № 8
-
+Написать запрос, выводящий процентное соотношение мужчин и женщин, проживающих в каждой стране, отсортированное по названию страны в алфавитном порядке. Столбцы в выводе должны быть такими: «Страна», «% мужчин», «% женщин» [использовать WITH]. Упорядочить по полному названию стран. 
 
 Запрос:
+WITH 
+table_man AS 
+	(SELECT c.CUST_ID FROM sh.CUSTOMERS c 
+	WHERE c.CUST_GENDER = 'M'),
+table_women AS 
+	(SELECT c.CUST_ID FROM sh.CUSTOMERS c 
+	WHERE c.CUST_GENDER = 'F')
+SELECT 
+	c.COUNTRY AS Страна, 
+round(count(tm.CUST_ID) / ( ( count(tm.CUST_ID) + count(tw.CUST_ID) ) / 100 ), 2) AS "% мужчин",
+round(count(tw.CUST_ID) / ( ( count(tm.CUST_ID) + count(tw.CUST_ID) ) / 100 ), 2) AS "% женщин"
+FROM sh.CUSTOMERS c 
+	LEFT JOIN table_man tm ON tm.CUST_ID = c.CUST_ID 
+	LEFT JOIN table_women tw ON tw.CUST_ID = c.CUST_ID 
+GROUP BY c.COUNTRY
+ORDER BY Страна ;

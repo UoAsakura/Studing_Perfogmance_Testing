@@ -1,4 +1,9 @@
 Задача № 13
-
+Написать запрос, выводящий почасовую разбивку количества операций продажи для Вашей таблицы.
 
 Запрос:
+SELECT TO_CHAR(TIME_ID, 'YYYY-MM-DD HH24') AS sale_hour,
+       COUNT(*) AS sales_count
+FROM sh.sales_evgendesktop_Evgenij_Bojarov
+GROUP BY TO_CHAR(TIME_ID, 'YYYY-MM-DD HH24')
+ORDER BY sale_hour;

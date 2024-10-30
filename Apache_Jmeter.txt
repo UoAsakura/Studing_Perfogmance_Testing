@@ -1,0 +1,52 @@
+
+
+Качаем.
+wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
+Разархивируем.
+tar -xvzf apache-jmeter-5.6.tgz
+Перемещаем.
+sudo mv apache-jmeter-5.6 /opt/jmeter
+Правим конфиг (Если ком. оболочка стандарнтная).
+nano ~/.bashrc
+export PATH=$PATH:/opt/jmeter/bin
+Применяем изменения.
+source ~/.bashrc
+
+Скачать плагин.
+sudo mv jmeter-plugins-manager-1.3.jar /opt/jmeter/lib/ext/
+
+Меняем количество потребляемой памяти. Меняем на -Xms2g -Xmx2g, чтобы было 2Gb.
+/opt/jmeter/bin/jmeter.bat
+if not defined HEAP (
+    rem See the unix startup file for the rationale of the following parameters,
+    rem including some tuning recommendations
+    set HEAP=-Xms2g -Xmx2g -XX:MaxMetaspaceSize=256m
+)
+
+
+Добивить плагины.
+Plagins:
+3 Basic Graphs
+5 Additional Graphs 
+Auto-Stop Listener 
+Custom Thread Groups 
+Distribution/Percentile Graphs 
+Dummy Sampler
+Flexible File Writer
+KPI vs KPI Graphs
+Plugins Manager
+Random CSV Data Set
+Weighted Switch 
+Controller jmeter - Core
+jmeter - FTP Protocol Support 
+jmeter - HTTP Protocol Support
+jmeter - JDBC Support
+jmeter JMS Support
+jmeter - JUnit Support
+jmeter Java Components
+jmeter - LDAP Protocol Support
+jmeter - Mail/SMTP Support
+jmeter - MongoDB Support
+jmeter - OS Process Support
+jmeter - TCP Protocol Support
+jmeter - Various Core Components

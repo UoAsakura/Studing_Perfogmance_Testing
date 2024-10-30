@@ -1,4 +1,12 @@
 Задача № 14
-
+Написать запрос, который удалит созданную в задании 11 таблицу. Сохранить сделанные изменения.
 
 Запрос:
+-- Удаление таблицы.
+DROP TABLE sh.sales_evgendesktop_Evgenij_Bojarov;
+-- Сохранение изменеий.
+COMMIT;
+
+-- Проверка удаления таблицы.
+SELECT * FROM sh.sales_evgendesktop_Evgenij_Bojarov;
+

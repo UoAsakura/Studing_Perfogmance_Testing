@@ -1,4 +1,20 @@
 Задача № 12
-
+Написать запрос, который для созданной в задании 11 таблицы изменит значение поля time_id на формат 'DD.MM.YYYY HH24:MI:SS' (см. NLS_DATE_FORMAT). Значение hh24:mm:ss должно выбираться случайным образом. Сохранить сделанные изменения. Показать все поля таблицы в порядке возрастания дат.
+SELECT dbms_random.value FROM DUAL возвращает случайное значение от 0 до 1; 
 
 Запрос:
+-- Установим формат даты для текущей сессии
+ALTER SESSION SET NLS_DATE_FORMAT = 'DD.MM.YYYY HH24:MI:SS';
+
+--Меняем знаяения часов, минут и секунд во всей таблице.
+UPDATE sh.sales_evgendesktop_Evgenij_Bojarov
+SET TIME_ID = TRUNC(TIME_ID) + TRUNC(DBMS_RANDOM.VALUE(0, 24)) / 24 +
+              TRUNC(DBMS_RANDOM.VALUE(0, 60)) / (24 * 60) + 
+              TRUNC(DBMS_RANDOM.VALUE(0, 60)) / (24 * 60 * 60);
+
+-- Сохранение изменеий.
+COMMIT;
+
+-- Демонстрация всех полей таблицы, в порядке возрастания дат.
+SELECT * FROM sh.sales_evgendesktop_Evgenij_Bojarov mytable
+ORDER BY mytable.TIME_ID;

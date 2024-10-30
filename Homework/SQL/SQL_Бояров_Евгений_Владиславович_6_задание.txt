@@ -1,4 +1,11 @@
 Задача № 6
-
+Написать запрос, выводящий "популярность" почтовых доменов клиентов, т.е. количество клиентов с почтой в каждом из доменов. 
 
 Запрос:
+SELECT 
+ROW_NUMBER() OVER(ORDER BY count(c.CUST_ID) desc) AS rating,
+c.CUST_POSTAL_CODE, 
+count(c.CUST_ID) AS amount_cust_id
+FROM sh.CUSTOMERS c 
+GROUP BY c.CUST_POSTAL_CODE 
+ORDER BY amount_cust_id DESC ;

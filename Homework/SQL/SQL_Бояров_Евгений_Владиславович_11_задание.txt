@@ -1,4 +1,23 @@
 Задача № 11
-
+Написать запрос, который создаст таблицу с именем sales_[имя пользователя в ОС]_[Ваше имя]_[Ваша фамилия], содержащую строки из таблицы sh.sales за один пиковый месяц. (Т.е. месяц, за который получена максимальная выручка). Показать все поля таблицы в порядке возрастания дат. 
 
 Запрос:
+CREATE TABLE sh.sales_evgendesktop_Evgenij_Bojarov AS
+SELECT *
+FROM sh.SALES s2
+WHERE TO_CHAR(s2.TIME_ID, 'YYYY-MM') =
+(
+	SELECT 
+		TO_CHAR(s.TIME_ID, 'YYYY-MM') AS month
+	FROM sh.SALES s
+		JOIN sh.PRODUCTS p ON p.PROD_ID = s.PROD_ID 
+	GROUP BY TO_CHAR(TIME_ID, 'YYYY-MM')
+	ORDER BY SUM(s.QUANTITY_SOLD * p.PROD_LIST_PRICE) DESC
+	FETCH FIRST 1 ROWS ONLY
+);
+
+-- Демонстрация всех полей таблицы, в порядке возрастания дат.
+SELECT * FROM sh.sales_evgendesktop_Evgenij_Bojarov
+ORDER BY TIME_ID ASC;
+
+
