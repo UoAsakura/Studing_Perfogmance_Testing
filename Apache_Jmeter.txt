@@ -85,5 +85,67 @@ Include Controller - позволяет использовать внешний 
 
 
 
+archCount = vars.get("title_matchNr");  // Заводим переменную с количеством разделов.
+result = "";  
+
+for (i=1; i <= Integer.parseInt(archCount);i++){	// Запускаем цикл, в котором будем конкатенировать 
+	chapter = vars.get("title_" + i);			// вычисляемые значения и добавлять их в переменную result.
+	lining = vars.get("content_"+ i).length(); 
+	result += "${i} : " + chapter + " : " + lining + "\n" 
+	};
+
+Рабочая версия 1-ой задачки:
+	archCount = vars.get("title_matchNr");  // Заводим переменную с количеством разделов.
+	result = "";  
+
+	for (i=1; i <= Integer.parseInt(archCount);i++){	// Запускаем цикл, в котором будем конкатенировать.
+		chapter = vars.get("title_" + i);			// вычисляемые значения и добавлять их в переменную result.
+		lining = vars.get("content_"+ i).length(); 
+		result += "${i} : " + chapter + " : " + lining + "\n" 
+		};
+
+	// Получаем путь к рабочей директории.
+	def currentDir = new File("${__BeanShell(vars.get('PWD'))}").absolutePath
+
+	// Задаем имя файла и путь к нему.
+	def filePath = currentDir + "/result_UC01A_HabrRegEx.txt"
 
 
+	// Открываем файл и записываем данные.
+	def file = new File(filePath)
+
+	// Если файл не существует, создаем его.
+	if (!file.exists()) {
+	    file.createNewFile()
+	}
+	// Записываем значение переменной result в файл.
+	def fileWriter = new FileWriter(file, false)
+	fileWriter.write(result)
+	fileWriter.close()
+
+	// В случае, если файл с таким именем уже существует, то он просто перезапишется.
+
+	log.info("Файл успешно создан в рабочей директории: " + filePath)
+	log.info("Запись в файл завершена. Данные: \n" + result)
+
+
+archCount = vars.get("Microarchitecture_matchNr")
+result = "Microarchitecture_matchNr: \n"
+
+for (i=1; i <= Integer.parseInt(archCount);i++){
+	result += vars.get("Microarchitecture_" + i) + "\n"
+	}
+
+return (result)  // Выводим все найденые совпадения на новой строчке.
+// return (archCount)  // Выводим кол-во найденых совпадений.
+
+
+// Получение текста раздела
+String sectionName = vars.get("section_" + vars.getIteration());
+int sectionLength = sectionName.length();
+
+// Формирование строки для вывода
+String line = vars.getIteration() + " : " + sectionName + " : " + sectionLength + "\n";
+
+// Сохраняем строку в переменной
+vars.put("output_line", line);
