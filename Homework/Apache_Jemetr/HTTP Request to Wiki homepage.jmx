@@ -57,7 +57,7 @@
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
           <stringProp name="HTTPSampler.domain">en.wikipedia.org</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.path">/wiki/Intel_Core</stringProp>
@@ -80,7 +80,7 @@
             <stringProp name="BoundaryExtractor.match_number">-1</stringProp>
           </BoundaryExtractor>
           <hashTree/>
-          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor">
+          <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
             <stringProp name="RegexExtractor.useHeaders">false</stringProp>
             <stringProp name="RegexExtractor.refname">Microarchitecture</stringProp>
             <stringProp name="RegexExtractor.regex">(\w+) microarchitecture</stringProp>
@@ -103,8 +103,48 @@ for (i=1; i &lt;= Integer.parseInt(archCount);i++){
 	result += vars.get(&quot;Microarchitecture_&quot; + i) + &quot;\n&quot;
 	}
 
-return (result)  // Выводим все найденые совпадения на новой строчке.
+//return (result)  // Выводим все найденые совпадения на новой строчке.
 // return (archCount)  // Выводим кол-во найденых совпадений.
+
+
+class HelloWorld {
+    static void main(String[] args) {
+        println (&quot;Hello world&quot;)
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </stringProp>
           <stringProp name="scriptLanguage">groovy</stringProp>
         </JSR223Sampler>
