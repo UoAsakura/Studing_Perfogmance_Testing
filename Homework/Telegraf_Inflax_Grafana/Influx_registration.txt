@@ -1,0 +1,19 @@
+Influx registration:
+
+Username: Evgen123
+Password: UGHuhuh*&21
+Tocken: WYQvUUyF1DvSDfJtYiwB6t1DlsaWECrCLZKPKMcm9qpZn6-SgiFNZklY4HZ0Bi7dZeDHYXgKi_YkHjxz153d2w==
+
+
+
+Grafana:
+Digest: sha256:458fff22f464693641e07ab69ced2f60811cd420fb04bc12d430cf87cfb32d6f
+Status: Downloaded newer image for grafana/grafana-enterprise:11.3.0-ubuntu
+bd1ee0cc5174787f7cb23ecc60c70eeb87ec883b24fb779146570756197a4b70
+
+username/email: admin
+password: fgJT7%*ghrt
+Organization: SpaseX8
+Bucket: Test
+
+docker compose up
