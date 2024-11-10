@@ -1,0 +1,47 @@
+Создаём новый проект в intellij idea.
+Указываем Java, (JDK) corretto-17, Maven (Build System)
+
+После переходим на https://start.spring.io/.
+И указываем там следующие парамеьры:
+	Project: Maven
+	Language: Java
+	Spring Boot: 3.3.5
+	Project Metadata:
+		Group: com.example
+		Artifact: newMock
+		Name: newMock
+		Description: Demo project for Spring Boot
+		Package name: com.example.newMock
+		Packaging: JarWar
+		Java: 232117
+А так же в Dependencies добавляем:
+	- Spring Web
+	- Lombok 
+Псле чего в Explore мы можем смотреть сконфигурированное приложение.
+Содержимое pom.xml перемещаем в pom.xml нашего проекта, устанавливая нужные плагины в него.
+Далее создаём New -> Package: com.example
+В com.example создаём com.example.Model и com.example.Controller
+В com.example.Controller создаём JavaClass (MainController), для логирования.
+
+После написания заглушки мы открываем Maven внутри IDEA, View -> ToolWindow -> Maven
+В Maven в Lifecycle последовательно выполняем
+	clean 
+	package
+После в корне появляется директория target, в которо мы открываем создавшийся jar-файл.
+
+URL с занятия, для проверки заглушки через Postman:
+http://localhost:8080/info/postBalances
+
+Для параметризации порта для ответа, в src -> main -> resources создаём файл с названием "application.properties", внутри которого указываем порт server.port=8089
+
+Также на jar-файл можно запустить из ком.стр. в том числе в фоновом режиме с логированием в текстовый файл (nohup.out):
+nohup java -jar newMock-0.0.1-SNAPSHOT.jar &
+логированием в текстовый файл (newMock.txt):
+nohup java -jar newMock-0.0.1-SNAPSHOT.jar > newMock.txt &
+в том числе с логированием в файл с указаникм порта (8081):
+nohup java -jar newMock-0.0.1-SNAPSHOT.jar --server.port=8081 &
+в том числе с указанием размера хипа (размера мин 1Гб и макс 2Гб памяти):
+nohup java -jar newMock-0.0.1-SNAPSHOT.jar --server.port=8081 -xms1g -xmx2g &
+
+Команда для размера хипа в OpenShift (75% по памяти): 
+-XX:MaxRAMPercentage  -XX:MaxRAMPercentage=75
