@@ -6,4 +6,30 @@ Run_Times settings
  - Задержки - lr_think_time
  - Точки встреч - lr_rendezvous
 
+UC_01_TR_01
+
+Simple
+Jbgg3443@
+
+Bordo
+JH344@jhu
+
+Microsh
+Loader765
+
+        <ns2:userId>506777554</ns2:userId>
+        <ns2:reason>Login Successful</ns2:reason>
+        <ns2:token>eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3d3cuYWR2YW50YWdlb25saW5lc2hvcHBpbmcuY29tIiwidXNlcklkIjo1MDY3Nzc1NTQsInN1YiI6IkJvcmRvIiwicm9sZSI6IlVTRVIifQ.iKhcrB5p6v5RKZAAW7ZP1p_FCxkGKxfwmAyCoGGOSMQ</ns2:token>
+        <ns2:sessionId>1931a8ec2d8@7E8BB91D2B^i%506777554</ns2:sessionId>
+        <ns2:t_authorization>Qm9yZG86SkgzNDRAamh1</ns2:t_authorization>
+
+
+web_reg_save_param (Boundary Extractor) - В Steps Toolbox вводм web_reg_save_apram, после чего внутри появившегося окна, указываем ограничения.
+
+web_add_auto_header("Ключ", "згачение{если это динамический параметр}");
+
+web_reg_save_param_json - JSON парсер
+
+
+
 
