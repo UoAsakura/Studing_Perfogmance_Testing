@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 
+import datetime
 import json
 import random
 from django.http import JsonResponse
@@ -12,7 +13,14 @@ def account_info(request):
     if request.method == "POST":
         # Получаем JSON-данные из запроса
         data = json.loads(request.body)
-
+        # Вычисляем дату запроса
+        now = datetime.datetime.now()
+        # Выводим лог в консоль
+        print(f"\n{now}          ****** Reuqest ******\n")
+        for k, v in data.items():
+            print(f"{k} : {v}")
+        print()
+        
         # Извлекаем необходимые параметры
         rqUID = data.get("rqUID")
         clientId = data.get("clientId")
@@ -41,7 +49,16 @@ def account_info(request):
             "balance": f"{balance:.2f}",
             "maxLimit": f"{max_limit:.2f}"
         }
-
+            
+        # Вычисляем дату ответа
+        now = datetime.datetime.now()
+        # Выводим лог в консоль
+        print(f"\n{now}          ****** Response ******\n")
+        for k, v in response_data.items():
+            print(f"{k} : {v}")
+        print()
+            
+            
         # Возвращаем JSON-ответ
         return JsonResponse(response_data)
 
