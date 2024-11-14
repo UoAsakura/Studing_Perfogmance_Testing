@@ -1,0 +1,16 @@
+version: "3"
+services:
+  # Название нашего сервиса (приложения).
+  web-app:
+    # Путь к месту Dockerfile для билда нашего имаджа.
+    build:
+      context: .
+    # Проброска портов из докер контейнера в наше ОС.
+    # Порт в контейнера : порт в нашей ОС
+    ports:
+      - "8000:8000"
+    # Подключенные тома.
+    volumes:
+      - ./myproject:/myproject
+    command: >
+      sh -c "python3 manage.py runserver 0.0.0.0:8000"
