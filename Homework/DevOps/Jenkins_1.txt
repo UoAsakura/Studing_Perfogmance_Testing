@@ -1,0 +1,27 @@
+java –version
+
+sudo apt-get update
+
+sudo apt-get install openjdk-8-jre
+
+4 команды с сайта ---- https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
+
+
+
+sudo cat и путь 
+
+cat > Dockerfile_2 <<EOF
+FROM ubuntu:16.04
+
+RUN apt-get -y update
+RUN apt-get -y install apache2
+
+RUN echo 'Hello World from Docker!' > /var/www/html/index.html
+
+CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+EXPOSE 80
+EOF
+
+---------------------------------------------------------
+https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
+

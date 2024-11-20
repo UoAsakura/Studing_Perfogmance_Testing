@@ -1,0 +1,38 @@
+
+--Вариант оптимизации запроса №1 -----------------------------------------------
+CREATE INDEX idx1_attachment_id ON attachment_users(attachment_id);
+drop index idx1_attachment_id;
+---------------------------------------------------------------------------------
+
+
+--Первый рабочий вариант оптимизации запроса №2 ---------------------------------
+EXPLAIN (ANALYZE, buffers)
+SELECT
+    substring(status, POSITION('.' IN status) + 1)
+FROM
+    attachment_users
+WHERE
+    status NOT LIKE '%.ERROR'
+    AND status NOT LIKE '%.DELETED';
+--Оптимизированный запрос без дублирования:
+-- - Убирает двойное вычисление substring.
+-- - Упрощает фильтрацию через LIKE, которая легче оптимизируется PostgreSQL.
+------------------------------------------------------------------
+   
+--Вариант с созданием индекса для запроса №2 ---------------------------------
+CREATE INDEX idx2_status_suffix_expr ON attachment_users (substring(status, POSITION('.' IN status) + 1));
+drop INDEX idx2_status_suffix_expr;
+------------------------------------------------------------------------------
+
+
+--Вариант с созданием индекса для запроса №3 ---------------------------------
+Индекс на колонке attachment_id в обеих таблицах:
+CREATE INDEX idx3_attachment_users_attachment_id ON attachment_users(attachment_id);
+drop index idx3_attachment_users_attachment_id;
+CREATE INDEX idx4_attachment_users_property_attachment_id ON attachment_users_property(attachment_id);
+drop index idx4_attachment_users_property_attachment_id;
+
+Индекс на колонке property_role с учётом фильтрации:
+CREATE INDEX idx5_attachment_users_property_role ON attachment_users_property(property_role);
+drop index idx5_attachment_users_property_role;
+------------------------------------------------------------------------------

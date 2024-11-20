@@ -1,0 +1,113 @@
+sudo apt update
+
+sudo apt install apt-transport-https ca-certificates
+
+curl -fssL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo apt install curl --- ЕСЛИ НЕ УСТАНОВЛЕН!!!!
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+https://docs.docker.com/engine/install/ubuntu/ - ЕСЛИ ВОЗНИКЛИ ПРОБЛЕМЫ С УСТАНОВКОЙ
+
+sudo apt install docker-ce
+
+sudo systemctl status docker
+
+docker -v
+
+sudo usermod -aG docker $USER
+
+exit
+
+
+
+docker images 
+
+docker pull hello-world 
+
+docker run -d hello-word
+
+docker images 
+
+docker search tomcat
+
+docker pull tomcat 
+
+docker ps 
+
+docker run -it -p 1234:8080 tomcat
+
+docker run -d -p 1234:8080 tomcat
+
+docker run -d -p 1236:80 nginx
+
+docker ps
+
+docker ps –a
+
+docker rmi hello-world
+
+docker rm
+
+docker stop Id 
+
+mkdir mydocker
+
+cd mydocker
+
+vim Dockerfile
+
+docker build -t perf:v1 . 
+
+docker run -d -p 7777:80 perf:v1
+
+docker tag perf:v1 perf:copy
+
+docker exec -it 68c241f24239 /bin/bash
+
+cd /var/www/html/
+
+cat index.html
+
+echo “ver 2” >> index.html
+
+docker commit  68c241f24239 perf: v2
+
+docker run -d -p 8888:80 perf:v2
+
+docker stop $(docker ps -a -q) 
+
+docker rm $(docker ps -a -q) 
+
+
+Сайты
+
+https://hub.docker.com/
+
+https://russianblogs.com/article/65581676120/ для исправления проблемы с томкат
+
+bcdedit /set hypervisorlaunchtype off -- команда для виртуалки
+
+для Dockerfile
+
+FROM ubuntu:16.04
+
+RUN apt-get -y update
+RUN apt-get -y install apache2
+
+RUN echo 'Hello World from Docker!' > /var/www/html/index.html
+
+CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+EXPOSE 80
+
+FROM amazoncorretto:17.0.3-alpine as corretto-jdk
+ADD /target/newMock-1.0-SNAPSHOT.jar demo.jar
+ENTRYPOINT ["java","-jar","demo.jar"]
+
+ 
+
+
+
+
+

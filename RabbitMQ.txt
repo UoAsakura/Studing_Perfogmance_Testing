@@ -1,0 +1,20 @@
+
+Скачивание Docker-образа:
+docker pull rebbitmq:3-management
+
+Запуск при помощи Docker:
+docker run -d --name my-rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+
+
+types:
+	- direct
+	- fanout - отправляет во все очереди сразу
+	- headers
+	- topic
+
+Durability:
+	- Durable - пре перезагрузке RabbitMQ созданные обменники не удалятся.
+	- Transient - пре перезагрузке RabbitMQ созданные обменники будет удалён.
+
+
+
