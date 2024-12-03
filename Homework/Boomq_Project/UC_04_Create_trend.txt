@@ -1,0 +1,318 @@
+#include <time.h>
+
+Action() {
+    time_t rawtime;                 // Время в формате UNIX
+    struct tm* timeinfo;            // Структура для хранения разбитого времени
+    char buffer[30];                // Буфер для строки с датой и временем
+
+    // Получаем текущее время
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    // Форматируем время в строку: ГГГГ-ММ-ДД ЧЧ:ММ:СС
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d_%H:%M:%S", timeinfo);
+
+    // Сохраняем строку как переменную LoadRunner
+    lr_save_string(buffer, "currentDateTime");
+
+	web_set_sockets_option("SSL_VERSION", "AUTO");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"none");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"navigate");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"document");
+
+	web_add_header("Sec-Fetch-User", 
+		"?1");
+
+	web_add_header("Upgrade-Insecure-Requests", 
+		"1");
+
+	web_add_auto_header("sec-ch-ua", 
+		"\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"");
+
+	web_add_auto_header("sec-ch-ua-mobile", 
+		"?0");
+
+	web_add_auto_header("sec-ch-ua-platform", 
+		"\"Windows\"");
+
+	web_url("authorize", 
+		"URL=https://dev-boomq.pflb.ru/authorize", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=", 
+		"Snapshot=t1.inf", 
+		"Mode=HTML",  
+		LAST);
+
+	/*Possible OAUTH authorization was detected. It is recommended to correlate the authorization parameters.*/
+
+	lr_start_transaction("UC_04_TR_01_Login_VU");
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"empty");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"cors");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"same-origin");
+
+	web_add_header("X-Client-Date", 
+		"2024-12-03T11:30:45.592Z");
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken",
+      "RegExp=boomq_auth=(.*);",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_submit_data("login", 
+		"Action=https://dev-boomq.pflb.ru/auth-srv/login", 
+		"Method=POST", 
+		"EncType=multipart/form-data", 
+		"TargetFrame=", 
+		"Referer=https://dev-boomq.pflb.ru/authorize", 
+		"Snapshot=t2.inf", 
+		"Mode=HTML", 
+		ITEMDATA, 
+		"Name=username", "Value={user_email}", ENDITEM, 
+		"Name=password", "Value={user_password}", ENDITEM, 
+		"Name=submit", "Value=Login", ENDITEM, 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken}");
+
+	web_url("config.json", 
+		"URL=https://dev-boomq.pflb.ru/config.json", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t3.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("user", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/user", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t4.inf", 
+		"Mode=HTML", 
+		EXTRARES, 
+		"Url=../static/media/en.b1acfc6b06bfe6e29bfbfc06d09d8177.svg", "Referer=https://dev-boomq.pflb.ru/account/new-test", ENDITEM, 
+		LAST);
+
+	web_url("modelSchema", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/modelSchema", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t5.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("identityProvider", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/identityProvider", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t6.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=teamid",
+		"QueryString=$..id",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_url("team", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team?size=2", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t7.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken_2",
+      "RegExp=boomq_auth=(.*)",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_url("teamContext", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember/teamContext?teamId={teamid_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t8.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken_2}");
+
+	web_url("testRunner", 
+		"URL=https://dev-boomq.pflb.ru/test-runner-srv/testRunner?sort=id,desc", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t9.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_04_TR_01_Login_VU",LR_AUTO);
+
+	lr_think_time(14);
+
+	lr_start_transaction("UC_04_TR_02_Create_new_trend");
+	
+	web_reg_save_param_json(
+	    "ParamName=all_projectId",                  
+	    "QueryString=$..projectId",                   
+	    "SelectAll=Yes",                           
+	    LAST);
+
+	web_url("slaReportProfile", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles", 
+		"Snapshot=t10.inf", 
+		"Mode=HTML", 
+		EXTRARES, 
+		"Url=../static/media/arrow_down.6be88730f13ef3a159f4ef4438670da1.svg", "Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", ENDITEM, 
+		"Url=../static/media/arrow.659530470e6be7b696f0d3d15a3179f5.svg", "Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", ENDITEM, 
+		LAST);
+	
+	lr_save_string(lr_paramarr_random("all_projectId"), "random_projectId");
+	
+	lr_output_message("Extracted projectId: %s", lr_eval_string("{projectId}"));
+
+	web_url("project", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project?sort=lastModified,desc&size=999", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t11.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_04_TR_02_Create_new_trend",LR_AUTO);
+
+	lr_start_transaction("UC_04_TR_03_Param_trend");
+	
+	web_reg_save_param_json(
+	    "ParamName=testIdList",                
+	    "QueryString=$..testId[*]",              
+	    "SelectAll=Yes",                          
+	    LAST);
+
+	web_url("test", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/test?sort=createDate,desc&size=999999&projectId={random_projectId}&state=FINISHED,FAILED,CANCELED", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t12.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_auto_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("slaTypeList", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile/slaTypeList", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t13.inf", 
+		"Mode=HTML", 
+		"Body={\"projectId\":{random_projectId},\"testFilterExpressionList\":[{\"type\":\"TEST_ID_EXPRESSION\",\"testIdList\":[{testIdList_1},{testIdList_2}]}]}", 
+		LAST);
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("previewReport", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile/previewReport", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t14.inf", 
+		"Mode=HTML", 
+		"Body={\"projectId\":{random_projectId},\"testFilterExpressionList\":[{\"type\":\"TEST_ID_EXPRESSION\",\"testIdList\":[{testIdList_1},{testIdList_2}]}],\"chartProfileList\":[],\"tableProfileList\":[]}", 
+		LAST);
+
+	lr_end_transaction("UC_04_TR_03_Param_trend",LR_AUTO);
+
+	lr_start_transaction("UC_04_TR_04_Param_schedule");
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("previewReport_2", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile/previewReport", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t15.inf", 
+		"Mode=HTML", 
+		"Body={\"projectId\":{random_projectId},\"chartProfileList\":[{\"slaTypeList\":[{\"fromDate\":1,\"restrictionType\":\"THROUGHPUT\",\"targetType\":\"TEST\",\"toDate\":2,\"type\":\"GENERAL_SLA_TYPE\"}]}],\"testFilterExpressionList\":[{\"type\":\"TEST_ID_EXPRESSION\",\"testIdList\":[{testIdList_1},{testIdList_2}]}]}", 
+		LAST);
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("previewReport_3", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile/previewReport", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t16.inf", 
+		"Mode=HTML", 
+		"Body={\"projectId\":{random_projectId},\"chartProfileList\":[{\"slaTypeList\":[{\"fromDate\":1,\"restrictionType\":\"THROUGHPUT\",\"targetType\":\"TEST\",\"toDate\":2,\"type\":\"GENERAL_SLA_TYPE\"},{\"fromDate\":1,\"restrictionType\":\"AVERAGE\",\"targetType\":\"TEST\",\"toDate\":2,\"type\":\"GENERAL_SLA_TYPE\"}]}],\"testFilterExpressionList\":[{\"type\":\"TEST_ID_EXPRESSION\",\"testIdList\":[{testIdList_1},{testIdList_2}]}]}", 
+		LAST);
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("slaReportProfile_2", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/slaReportProfile", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/sla-report-profiles/new", 
+		"Snapshot=t17.inf", 
+		"Mode=HTML", 
+		"Body={\"name\":\"tread_{currentDateTime}\",\"projectId\":{random_projectId},\"chartProfileList\":[{\"slaTypeList\":[{\"fromDate\":1,\"restrictionType\":\"THROUGHPUT\",\"targetType\":\"TEST\",\"toDate\":2,\"type\":\"GENERAL_SLA_TYPE\"},{\"fromDate\":1,\"restrictionType\":\"AVERAGE\",\"targetType\":\"TEST\",\"toDate\":2,\"type\":\"GENERAL_SLA_TYPE\"}],\"orderInReport\":0}],\"tableProfileList\":[],\"testFilterExpressionList\":[{\"type\":\"TEST_ID_EXPRESSION\",\"testIdList\":[8584,8582]}]}", 
+		LAST);
+
+	lr_end_transaction("UC_04_TR_04_Param_schedule",LR_AUTO);
+	
+	lr_output_message("Создался тред: %s", lr_eval_string("tread_{currentDateTime}"));
+
+	return 0;
+}

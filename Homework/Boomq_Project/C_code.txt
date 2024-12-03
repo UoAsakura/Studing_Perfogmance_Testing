@@ -1,0 +1,30 @@
+#include "stdlib.h" 
+#include "time.h"
+#include "string.h"
+#include <stdio.h>
+
+
+	// Генерация данных пользователя 
+	char file_line [100]= {0};
+	char new_user_name [40] = {0};
+	char random_str[20] = {0};
+	
+	strcat(new_user_name, lr_eval_string("{pattern_name}")); 
+//	generateRandomString(20, random_str);
+	strcat(new_user_name, random_str); 
+	lr_save_string(new_user_name, "new_user_name");
+	
+	strcat(file_line, new_user_name);
+	strcat(file_line, ",");
+	
+	lr_save_string(strcat (new_user_name, "@mail.ru"), "new_user_login");
+	
+	strcat(file_line, new_user_name);
+	strcat(file_line, ",");
+	
+	lr_save_string(lr_eval_string("{pattern_pass}"), "new_user_pass");
+	
+	lr_paramarr_random();
+
+	
+	return 0;

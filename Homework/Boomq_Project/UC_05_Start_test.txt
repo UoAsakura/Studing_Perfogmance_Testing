@@ -1,0 +1,357 @@
+Action()
+{
+
+	web_set_sockets_option("SSL_VERSION", "AUTO");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"none");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"navigate");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"document");
+
+	web_add_header("Sec-Fetch-User", 
+		"?1");
+
+	web_add_header("Upgrade-Insecure-Requests", 
+		"1");
+
+	web_add_auto_header("sec-ch-ua", 
+		"\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"");
+
+	web_add_auto_header("sec-ch-ua-mobile", 
+		"?0");
+
+	web_add_auto_header("sec-ch-ua-platform", 
+		"\"Windows\"");
+
+	web_url("authorize", 
+		"URL=https://dev-boomq.pflb.ru/authorize", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=", 
+		"Snapshot=t1.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	/*Possible OAUTH authorization was detected. It is recommended to correlate the authorization parameters.*/
+
+	lr_start_transaction("UC_05_TR_01_Login_VU");
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"empty");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"cors");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"same-origin");
+
+	web_add_header("X-Client-Date", 
+		"2024-12-03T11:12:53.681Z");
+
+	web_reg_save_param_regexp(
+      "ParamName=authToken",
+      "RegExp=boomq_auth=(.*);",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_submit_data("login", 
+		"Action=https://dev-boomq.pflb.ru/auth-srv/login", 
+		"Method=POST", 
+		"EncType=multipart/form-data", 
+		"TargetFrame=", 
+		"Referer=https://dev-boomq.pflb.ru/authorize", 
+		"Snapshot=t2.inf", 
+		"Mode=HTML", 
+		ITEMDATA, 
+		"Name=username", "Value={user_email}", ENDITEM, 
+		"Name=password", "Value={user_password}", ENDITEM, 
+		"Name=submit", "Value=Login", ENDITEM, 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken}");
+
+	web_url("user", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/user", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t3.inf", 
+		"Mode=HTML", 
+		EXTRARES, 
+		"Url=../static/media/en.b1acfc6b06bfe6e29bfbfc06d09d8177.svg", "Referer=https://dev-boomq.pflb.ru/account/new-test", ENDITEM, 
+		LAST);
+
+	web_url("modelSchema", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/modelSchema", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t4.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("config.json", 
+		"URL=https://dev-boomq.pflb.ru/config.json", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t5.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("identityProvider", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/identityProvider", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t6.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=teamid",
+		"QueryString=$..id",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_url("team", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team?size=2", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t7.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken_2",
+      "RegExp=boomq_auth=(.*)",
+      SEARCH_FILTERS,
+      LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=userId",
+		"QueryString=$..userId",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_url("teamContext", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember/teamContext?teamId={teamid_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t8.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken_2}");
+
+	web_url("testRunner", 
+		"URL=https://dev-boomq.pflb.ru/test-runner-srv/testRunner?sort=id,desc", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t9.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("user_2", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/user", 
+		"Method=PUT", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t10.inf", 
+		"Mode=HTML", 
+		"Body={\"email\":\"{user_email}\",\"id\":{userId},\"language\":\"EN\",\"notificationEnabled\":false}", 
+		LAST);
+
+	web_url("16", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team/{teamid_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t11.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_05_TR_01_Login_VU",LR_AUTO);
+
+	lr_think_time(10);
+
+	lr_start_transaction("UC_05_TR_02_Show_tests");
+
+	web_url("label", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project/label?query=", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests", 
+		"Snapshot=t12.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=all_tests",
+		"QueryString=$..id",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_url("project", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project?sort=lastModified,desc&page=0&size=9", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests", 
+		"Snapshot=t13.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	lr_save_string(lr_paramarr_random("all_tests"), "random_test");
+
+	lr_end_transaction("UC_05_TR_02_Show_tests",LR_AUTO);
+
+	lr_think_time(25);
+
+	lr_start_transaction("UC_05_TR_03_Start_test");
+	
+	web_reg_save_param_json(
+		"ParamName=sub_test",
+		"QueryString=$..version[0].id",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_url("3151", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project/{random_test}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests/{random_test}", 
+		"Snapshot=t14.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("4194", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project/{random_test}/version/{sub_test_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests/{random_test}", 
+		"Snapshot=t15.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("downloadLink", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project/{random_test}/version/{sub_test_1}/downloadLink", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests/{random_test}", 
+		"Snapshot=t16.inf", 
+		"Mode=HTML", 
+		EXTRARES, 
+		"Url=/minio/boomq/boomq/teams/{teamid_1}/projects/{random_test}/{sub_test_1}.yaml?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIOSFODNN7EXAMPLE/20241203/us-east-1/s3/aws4_request&X-Amz-Date=20241203T111358Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=289cac15a2cb444c84f99ef42366c93839ab86840fffe40a4598811e37ec2bef", "Referer=https://dev-boomq.pflb.ru/account/tests/{random_test}", ENDITEM, 
+		LAST);
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+
+	web_add_header("Content-Type", "application/json");
+	
+	web_reg_save_param_json(
+		"ParamName=test_name",
+		"QueryString=$..projectName",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_custom_request("test", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/test", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/tests/{random_test}", 
+		"Snapshot=t17.inf", 
+		"Mode=HTML", 
+		"Body={\"comment\":\"\",\"labelSet\":[],\"projectId\":\"{random_test}\",\"projectVersionId\":{sub_test_1},\"testMode\":\"TEST\",\"testProjectId\":\"{random_test}\",\"testProjectVersionId\":{sub_test_1}}", 
+		LAST);
+
+	web_url("project_2", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/project?sort=lastModified,desc&size=999", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/test-runs", 
+		"Snapshot=t18.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("label_2", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/test/label?query=", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/test-runs", 
+		"Snapshot=t19.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("user_3", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/user", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/test-runs", 
+		"Snapshot=t20.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("test_2", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/test?sort=createDate,desc&displayState=INITIALIZATION,WAITING,RUNNING,TEST_STOPPING", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/test-runs", 
+		"Snapshot=t21.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("test_3", 
+		"URL=https://dev-boomq.pflb.ru/test-srv/test?sort=createDate,desc&page=0&size=7", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/test-runs", 
+		"Snapshot=t22.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_05_TR_03_Start_test",LR_AUTO);
+	
+	lr_output_message("Запустился тест: %s", lr_eval_string("{test_name}"));
+
+	return 0;
+}

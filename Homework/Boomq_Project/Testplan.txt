@@ -1,0 +1,60 @@
+Учётка группы:
+owner_nagruzka8_gr2@mail.ru
+Wsx321!@#
+
+UC_01_Registration
+	UC_01_TR_01_Login_admin
+	UC_01_TR_02_Create_VU
+	UC_01_TR_03_Logout_admin
+	UC_01_TR_04_Change_password
+
+UC_02_Create_report
+	UC_02_TR_01_Login_VU
+	UC_02_TR_02_Report
+	UC_02_TR_04_Change_password
+
+UC_03_Create_test
+	UC_02_TR_01_Login_VU
+	UC_02_TR_02_Create_new_test
+	UC_02_TR_02_Param_new_test
+
+UC_04_Create_trend
+	UC_04_TR_01_Login_VU
+	UC_04_TR_02_Create_new_trend
+	UC_04_TR_03_Param_trend
+	UC_04_TR_04_Param_schedule
+	
+UC_05_Start_test
+	UC_05_TR_01_Login_VU
+	UC_05_TR_02_Report
+	UC_05_TR_03_Change_password
+
+test_user_49
+test_user_49@mail.ru
+
+Регистрация	150
+Создание отчета	600
+Создание теста	900
+Создание тренда	1500
+Запуск теста	270
+
+
+1. Создать пользователя на boomq под учёткой группы
+
+
+2. Зайти под созданным юзером 
+		Условия создания отчёта:
+			Назвать рандомным количеством латинских символов
+			Добавить 3 вида Add
+
+
+3. Создать новый тест после чего параметрезировать тарнзакцию
+	Параметрезировать профиль нагрузки, в SLA включить среднее время отклика и процент ошибок
+
+
+
+4. Создать тренд
+
+
+
+5. Запуск теста

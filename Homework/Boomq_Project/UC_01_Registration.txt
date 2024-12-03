@@ -1,0 +1,502 @@
+#include <stdlib.h>
+#include <time.h>
+#include <stdio.h>
+#include <string.h> // Для работы со строками
+
+// Функция для генерации случайной строки
+void generate_random_string(char* str, int length) {
+    const char charset[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+    int charset_size = sizeof(charset) - 1; // Размер набора символов (без '\0')
+    int i;
+    for (i = 0; i < length; i++) {
+        str[i] = charset[rand() % charset_size];
+    }
+    str[length] = '\0'; // Завершаем строку символом конца строки
+}
+
+// Функция для добавления заголовка, если файл пустой или его нет
+void ensure_file_has_header(const char* filename) {
+    FILE* file;            // Переменная для работы с файлом
+    long file_size;        // Размер файла
+
+    file = fopen(filename, "r"); // Попробуем открыть файл для чтения
+    if (file == NULL) {
+        // Файл не существует, создаем его с заголовком
+        file = fopen(filename, "w");
+        if (file == NULL) {
+            printf("Error: Could not create file for writing header.\n");
+            return;
+        }
+        fprintf(file, "user_email,user_password,user_name\n");
+        fclose(file);
+    } else {
+        // Проверяем, пуст ли файл
+        fseek(file, 0, SEEK_END);    // Перемещаем указатель в конец файла
+        file_size = ftell(file);    // Считываем размер файла
+        fclose(file);
+
+        if (file_size == 0) {
+            // Файл существует, но пустой — добавляем заголовок
+            file = fopen(filename, "w");
+            if (file == NULL) {
+                printf("Error: Could not open file for writing header.\n");
+                return;
+            }
+            fprintf(file, "user_email,user_password,user_name\n");
+            fclose(file);
+        }
+    }
+}
+
+Action() {
+    char user_name[16];       // Массив для случайной строки
+    char user_password[] = "Wsx321!@#"; // Пароль пользователя
+    char postFix[] = "@mail.ru"; // Фиксированная часть конца строки
+    char user_email[100]; // Массив для результирующей строки
+    int seed;                    // Переменная для генератора случайных чисел
+    const char* filename = "virtual_users.dat"; // Имя файла
+    FILE* file;                  // Указатель на файл
+
+    // Инициализация генератора случайных чисел
+    seed = time(NULL);
+    srand(seed);
+
+    // Генерация случайной строки
+    generate_random_string(user_name, 15);
+    strcpy(user_email, user_name);   // Дополняем рандомную строку
+    strcat(user_email, postFix);   // Завершаем @mail.ru
+    
+    
+
+    // Сохранение результирующей строки в параметре LoadRunner
+    lr_save_string(user_email, "user_email");
+    lr_save_string(user_password, "user_password");
+    lr_save_string(user_name, "user_name");
+
+    // Логирование результирующей строки
+    lr_output_message("Генерация строки со случайным email: %s", lr_eval_string("{user_email}"));
+    
+    // Обеспечиваем, что файл имеет заголовок
+    ensure_file_has_header(filename);
+
+    // Открытие файла для записи
+    file = fopen("virtual_users.dat", "a"); // Открываем файл в режиме добавления
+    if (file == NULL) {
+        lr_error_message("Error: Could not open file for writing.");
+        return -1; // Завершаем с ошибкой, если файл не удалось открыть
+    }
+
+    // Запись результирующей строки в файл
+    fprintf(file, "%s,%s,%s\n", user_email,user_password,user_name);
+
+    // Закрытие файла
+    fclose(file);
+
+    lr_output_message("Данные пользователя добавлены в: virtual_users.txt");
+    
+	web_set_sockets_option("SSL_VERSION", "AUTO");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"none");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"navigate");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"document");
+
+	web_add_header("Sec-Fetch-User", 
+		"?1");
+
+	web_add_header("Upgrade-Insecure-Requests", 
+		"1");
+
+	web_add_auto_header("sec-ch-ua", 
+		"\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"");
+
+	web_add_auto_header("sec-ch-ua-mobile", 
+		"?0");
+
+	web_add_auto_header("sec-ch-ua-platform", 
+		"\"Windows\"");
+
+	web_url("authorize", 
+		"URL=https://dev-boomq.pflb.ru/authorize", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=", 
+		"Snapshot=t1.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	/*Possible OAUTH authorization was detected. It is recommended to correlate the authorization parameters.*/
+
+	lr_start_transaction("UC_01_TR_01_Login_admin");
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"empty");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"cors");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"same-origin");
+
+	web_add_header("X-Client-Date", 
+		"2024-12-01T08:41:25.257Z");
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken",
+      "RegExp=boomq_auth=(.*);",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_submit_data("login", 
+		"Action=https://dev-boomq.pflb.ru/auth-srv/login", 
+		"Method=POST", 
+		"EncType=multipart/form-data", 
+		"TargetFrame=", 
+		"Referer=https://dev-boomq.pflb.ru/authorize", 
+		"Snapshot=t2.inf", 
+		"Mode=HTML", 
+		ITEMDATA, 
+		"Name=username", "Value={admin_email}", ENDITEM, 
+		"Name=password", "Value={admin_pass}", ENDITEM, 
+		"Name=submit", "Value=Login", ENDITEM, 
+		LAST);
+	
+
+	web_url("config.json", 
+		"URL=https://dev-boomq.pflb.ru/config.json", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t3.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken}");
+
+	web_url("user", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/user", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t4.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("modelSchema", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/modelSchema", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t5.inf", 
+		"Mode=HTML", 
+		EXTRARES, 
+		"Url=../static/media/en.b1acfc6b06bfe6e29bfbfc06d09d8177.svg", "Referer=https://dev-boomq.pflb.ru/account/new-test", ENDITEM, 
+		LAST);
+
+	web_url("identityProvider", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/identityProvider", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t6.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=teamMember",
+		"QueryString=$..teamMemberCount",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+	
+	web_reg_save_param_json(
+		"ParamName=teamid",
+		"QueryString=$..id",
+		"SelectAll=Yes",
+		SEARCH_FILTERS,
+		LAST);
+	
+	web_url("team", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team?size=2", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t7.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken_2",
+      "RegExp=boomq_auth=(.*)",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_url("teamContext", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember/teamContext?teamId={teamid_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t8.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	web_add_auto_header("Authorization", "Bearer {authToken_2}");
+
+	web_url("testRunner", 
+		"URL=https://dev-boomq.pflb.ru/test-runner-srv/testRunner?sort=id,desc", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t9.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_01_TR_01_Login_admin",LR_AUTO);
+
+	lr_start_transaction("UC_01_TR_02_Create_VU");
+
+//	web_reg_save_param_json(
+//		"ParamName=teamid",
+//		"QueryString=$..id",
+//		"SelectAll=Yes",
+//		SEARCH_FILTERS,
+//		LAST);
+	
+	web_url("team_2", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team?page=0&size=7", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams", 
+		"Snapshot=t10.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("21", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team/{teamid_1}",
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t11.inf", 
+		"Mode=HTML", 
+		LAST);
+	
+	
+	web_url("teamMember", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}&page=0&size=6", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t12.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+	
+	web_reg_save_param_json(
+	    "ParamName=link_change_pass",
+	    "QueryString=$..inviteUrl",
+	    SEARCH_FILTERS,
+	    LAST);
+	
+	web_reg_save_param_json(
+	    "ParamName=user_id",
+	    "QueryString=$..userId",
+	    SEARCH_FILTERS,
+	    LAST);
+	
+	web_add_header("Content-Type", "application/json");
+
+	web_custom_request("teamMember_2", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}", 
+		"Method=POST", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t13.inf", 
+		"Mode=HTML", 
+		"Body=[{\"email\":\"{user_email}\",\"permissionList\":[\"ADMIN\",\"VIEW\",\"RUN\",\"EDIT\",\"MANAGE_USERS_IN_ORG\"],\"userDisplayName\":\"{user_name}\"}]", 
+		LAST);
+
+	web_url("teamMember_3", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}&page=0&size=6", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t14.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("teamMember_4", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}&page=20&size=6", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t15.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("teamMember_5", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}&page=1&size=6", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t16.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+	
+	web_add_header("Content-Type", "application/json");
+	
+	web_reg_save_param_json(
+		"ParamName=user_email",
+		"QueryString=$..email",
+		SEARCH_FILTERS,
+		LAST);
+
+	web_custom_request("teamMember_6", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember?teamId={teamid_1}", 
+		"Method=PUT", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/account/teams/{teamid_1}", 
+		"Snapshot=t17.inf", 
+		"Mode=HTML", 
+		"Body=[{\"email\":\"{user_email}\",\"id\":{user_id},\"permissionList\":[\"VIEW\",\"MANAGE_USERS_IN_ORG\",\"ADMIN\",\"EDIT\",\"RUN\"],\"teamId\":\"{teamid_1}\",\"userDisplayName\":\"{user_name}\",\"userId\":{user_id},\"updateInviteExpiration\":true}]", 
+		LAST);
+
+	lr_end_transaction("UC_01_TR_02_Create_VU",LR_AUTO);
+
+	lr_start_transaction("UC_01_TR_03_Logout_admin");
+
+	lr_end_transaction("UC_01_TR_03_Logout_admin",LR_AUTO);
+
+	lr_start_transaction("UC_01_TR_04_Change_password");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"none");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"navigate");
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"document");
+
+	web_add_header("Sec-Fetch-User", 
+		"?1");
+
+	web_add_header("Upgrade-Insecure-Requests", 
+		"1");
+	
+	web_reg_save_param_regexp(
+      "ParamName=authToken_3",
+      "RegExp=boomq_auth=(.*);",
+      SEARCH_FILTERS,
+      LAST);
+
+	web_url("eHYjWjL7Idro5eaZikzHhHxlM-SF_97ww1kKwpngUEqsYmwJqTRIsI8hWTraTz31izvcN0-upUbIlzGruK_S70sUvmIL5t9z60zUl7MEiSKVymY7YYN-400lC_FWsqX5", 
+		"URL=https://dev-boomq.pflb.ru{link_change_pass}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=text/html", 
+		"Referer=", 
+		"Snapshot=t18.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_auto_header("Sec-Fetch-Dest", 
+		"empty");
+
+	web_add_auto_header("Sec-Fetch-Mode", 
+		"cors");
+
+	web_add_auto_header("Sec-Fetch-Site", 
+		"same-origin");
+	
+	web_add_auto_header("Authorization", "Bearer {authToken_3}");
+
+	web_url("modelSchema_2", 
+		"URL=https://dev-boomq.pflb.ru/project-srv/modelSchema", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/change-password", 
+		"Snapshot=t19.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_add_header("Origin", 
+		"https://dev-boomq.pflb.ru");
+	
+	web_add_header("Content-Type", "application/json");
+	
+	web_add_auto_header("Authorization", "Bearer {authToken_3}");
+
+	web_custom_request("user_2", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/user", 
+		"Method=PUT", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"Referer=https://dev-boomq.pflb.ru/change-password", 
+		"Snapshot=t20.inf", 
+		"Mode=HTML", 
+		"Body={\"password\":\"{user_password}\"}", 
+		LAST);
+
+	web_url("team_3", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/team?size=2", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t21.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("teamContext_2", 
+		"URL=https://dev-boomq.pflb.ru/auth-srv/teamMember/teamContext?teamId={teamid_1}", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t22.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	web_url("testRunner_2", 
+		"URL=https://dev-boomq.pflb.ru/test-runner-srv/testRunner?sort=id,desc", 
+		"TargetFrame=", 
+		"Resource=0", 
+		"RecContentType=application/json", 
+		"Referer=https://dev-boomq.pflb.ru/account/new-test", 
+		"Snapshot=t23.inf", 
+		"Mode=HTML", 
+		LAST);
+
+	lr_end_transaction("UC_01_TR_04_Change_password",LR_AUTO);
+
+	return 0;
+}
