@@ -1,0 +1,43 @@
+pipeline{ agent any
+    
+    stages{ stage ('build maven'){ steps{
+                echo 'Сборка проекта' 
+                build 'Docker/build maven'
+            }
+        }
+        stage ('Stop Con'){
+            steps{
+                echo 'Остановка контейнеров' 
+                build(job: 'Docker/Stop Con', propagate: false)
+            }
+        }
+        stage ('Delete Dockerfile'){
+            steps{
+                echo 'Удаление докер файла'
+                build(job: 'Docker/Delete Dockerfile', propagate: false) 
+
+
+            }
+        }
+        stage ('Dockerfile'){
+            steps{
+                echo 'Запись докер файла'
+                build(job: 'Docker/Dockerfile', propagate: false)
+            }
+        }
+        stage ('Copy'){
+            steps{
+                echo 'Копирование докер файла'
+                build(job: 'Docker/Copy', propagate: false)
+                build 'Docker/Copy'
+                
+            }
+        }
+        stage ('build image'){
+            steps{
+                echo 'Создание images и запуск контейнера'
+                build(job: 'Docker/build image', propagate: false)
+            }
+        }
+    }       
+}

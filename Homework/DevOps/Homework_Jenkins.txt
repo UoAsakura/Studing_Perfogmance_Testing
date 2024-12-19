@@ -1,0 +1,42 @@
+Создание образа:
+docker run -d --name jenkins -p 8080:8080 -p 50000:50000 \
+    -v jenkins_home:/var/jenkins_home \
+    jenkins/jenkins:lts
+
+--name jenkins: Название контейнера.
+-p 8080:8080: Порт Jenkins для доступа через браузер.
+-p 50000:50000: Порт для связи с агентами Jenkins.
+-v jenkins_home:/var/jenkins_home: Использует том jenkins_home для хранения данных. Это важно, чтобы состояние Jenkins (включая установленные плагины, настройки и данные сборок) сохранялось между перезапусками контейнера.
+jenkins/jenkins:lts: Официальный образ Jenkins с последней стабильной версией.
+
+Получение пароля:
+docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+Вход в работающий контейнер jenkins:
+docker exec -it jenkins bash
+
+
+
+pipeline {
+    agent any
+    stages {
+        stage('build test project') {
+            steps {
+                echo 'Сборка проекта'
+                build (job: 'Easy job/build test project', propagate: false)
+            }
+        }
+        stage('reading file') {
+            steps {
+                echo 'Прочтение файла'
+                build (job: 'Easy job/reading file', propagate: false)
+            }
+        }
+        stage('remove project') {
+            steps {
+                echo 'Удаление проекта'
+                build job: 'Easy job/remove project'
+            }
+        }
+    }
+}
