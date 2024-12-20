@@ -1,0 +1,15 @@
+Виды нагрузочных тестов, цели НТ
+Методика НТ и отчет НТ
+Профиль НТ и pacing
+Python / Java , JVM , GC
+Loadrunner / Jmeter / Gatling
+Базы данных / Postgres / Oracle
+Telegraf / InfluxDB / Prometeus / Grafana
+Мониторинг, метрики, локализация узких мест
+Docker (Compose) / Kubernetes / Openshift / Jenkins
+Git
+Kafka / RabbitMQ
+Linux (Bash)
+Рассказ по основнуму и дополнительному проектам
+Протоколы, заглушки, интеграционное тестирование
+
