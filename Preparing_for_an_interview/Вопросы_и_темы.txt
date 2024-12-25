@@ -2,7 +2,7 @@
 Методика НТ и отчет НТ
 Профиль НТ и pacing
 Python / Java , JVM , GC
-Loadrunner / Jmeter / Gatling
+Loadrunner / Jmeter
 Базы данных / Postgres / Oracle
 Telegraf / InfluxDB / Prometeus / Grafana
 Мониторинг, метрики, локализация узких мест

@@ -1,0 +1,26 @@
+
+JDK
+	JDT
+		- java
+		- javac
+		- jar
+	JRE
+		Java Libary Classes
+		JVM
+			Memory
+				- heap
+					- new_generation
+						- Eden
+						- Survivor_0
+						- Survivor_1
+					- old_generation
+						- Tenured
+				- stack
+			GC's
+				- Seriall_GC
+				- Parallel_GC
+				- CMS_GC
+				- G1_GC
+				- ZGC
+				- Epsilon_GC
+				- Shenendoah_GC
